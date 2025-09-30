@@ -11,10 +11,11 @@ Watch an AI agent learn from experience in real-time! The agent starts with no k
 ### Quick Start
 
 ```bash
-# Install dependencies
-pip install numpy
+# With uv (recommended - handles dependencies automatically)
+uv run main.py
 
-# Run the simulation
+# Or with pip
+pip install numpy
 python main.py
 ```
 
