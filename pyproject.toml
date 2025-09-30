@@ -1,0 +1,8 @@
+[project]
+name = "bayesian-agent"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.3.3",
+]
