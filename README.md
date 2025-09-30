@@ -4,6 +4,10 @@ A simulation of an autonomous agent learning to navigate and survive in an envir
 
 ## For Users
 
+### Demo
+
+![Simulation Demo](demo.gif)
+
 ### What is this?
 
 Watch an AI agent learn from experience in real-time! The agent starts with no knowledge about which foods are good or bad. Through trial and error, it builds up beliefs about food types using **Bayesian probability**, gradually learning to prefer high-energy foods and avoid toxic ones.
