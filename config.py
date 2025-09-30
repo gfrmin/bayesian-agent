@@ -11,7 +11,7 @@ STARTING_POSITION = (GRID_WIDTH // 2, GRID_HEIGHT // 2)
 
 # Food spawning
 MAX_FOOD_ITEMS = 8
-FOOD_SPAWN_RATE = 0.3  # Probability per tick to spawn new food
+FOOD_SPAWN_RATE = 0.5  # Probability per tick to spawn new food
 
 # Food features
 SHAPES = ["●", "■", "▲"]  # circle, square, triangle

@@ -208,52 +208,55 @@ class Simulation:
             self.render()
             time.sleep(UPDATE_DELAY)
 
-        # Show final stats
-        self.show_final_stats()
 
-    def show_final_stats(self):
-        """Display final statistics."""
-        # Print to stdout for scrollback (curses.wrapper will handle endwin)
-        print("\n=== SIMULATION ENDED ===")
-        print(f"Final Energy: {self.agent.energy:.2f} | Steps: {self.agent.total_steps} | Foods Consumed: {len(self.env.eaten_foods)}")
+def print_final_stats(agent, env):
+    """Print final statistics after curses has exited."""
+    from config import ENERGY_DISTRIBUTIONS
 
-        # Show learned beliefs
-        print("\n=== LEARNED BELIEFS ===")
-        beliefs = self.agent.get_belief_summary()
+    print("\n=== SIMULATION ENDED ===")
+    print(f"Final Energy: {agent.energy:.2f} | Steps: {agent.total_steps} | Foods Consumed: {len(env.eaten_foods)}")
 
-        from config import ENERGY_DISTRIBUTIONS
-        for key in sorted(beliefs.keys()):
-            shape, color = key
-            belief = beliefs[key]
-            true_mean, true_std = ENERGY_DISTRIBUTIONS[key]
+    # Show learned beliefs
+    print("\n=== LEARNED BELIEFS ===")
+    beliefs = agent.get_belief_summary()
 
-            print(f"{shape} {color:6s}: learned={belief['mean']:+.1f}±{belief['std']:.1f} true={true_mean:+.1f}±{true_std:.1f} (n={int(belief['n'])})")
+    for key in sorted(beliefs.keys()):
+        shape, color = key
+        belief = beliefs[key]
+        true_mean, true_std = ENERGY_DISTRIBUTIONS[key]
 
-        # Show energy history
-        print("\n=== ENERGY HISTORY ===")
-        if self.agent.energy_history:
-            for idx, entry in enumerate(self.agent.energy_history, 1):
-                before = entry["energy_before"]
-                after = entry["energy_after"]
-                delta = entry["delta"]
-                reason = entry["reason"]
+        print(f"{shape} {color:6s}: learned={belief['mean']:+.1f}±{belief['std']:.1f} true={true_mean:+.1f}±{true_std:.1f} (n={int(belief['n'])})")
 
-                print(f"Step {idx:3d}: {before:6.2f}→{after:6.2f} (Δ{delta:+.2f}) {reason}")
-        else:
-            print("No energy history recorded.")
+    # Show energy history
+    print("\n=== ENERGY HISTORY ===")
+    if agent.energy_history:
+        for idx, entry in enumerate(agent.energy_history, 1):
+            before = entry["energy_before"]
+            after = entry["energy_after"]
+            delta = entry["delta"]
+            reason = entry["reason"]
 
-        print()
+            print(f"Step {idx:3d}: {before:6.2f}→{after:6.2f} (Δ{delta:+.2f}) {reason}")
+    else:
+        print("No energy history recorded.")
+
+    print()
 
 
 def main(stdscr):
     """Entry point for curses."""
     sim = Simulation(stdscr)
     sim.run()
+    return sim  # Return simulation for stats printing
 
 
 if __name__ == "__main__":
     try:
-        curses.wrapper(main)
+        sim = curses.wrapper(main)
+        # Print stats after curses has exited
+        if sim:
+            print_final_stats(sim.agent, sim.env)
+            input("Press Enter to exit...")
     except KeyboardInterrupt:
         print("\nSimulation interrupted.")
         sys.exit(0)
